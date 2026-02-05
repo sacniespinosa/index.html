@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DelMar School of English - Placement Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Source+Sans+Pro:wght@300;400;600&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .font-body {
+      font-family: 'Source Sans Pro', Arial, sans-serif;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .animate-slide-in {
+      animation: slideIn 0.4s ease-out forwards;
+    }
+    .question-card {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    .option-btn {
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover {
+      transform: translateX(8px);
+    }
+    .progress-fill {
+      transition: width 0.5s ease-out;
+    }
+    .wave-bg {
+      background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 50%, #0ea5e9 100%);
+    }
+    .card-shadow {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full font-body">
+  <div id="app" class="h-full w-full wave-bg overflow-auto"><!-- Welcome Screen -->
+   <div id="welcome-screen" class="min-h-full flex items-center justify-center p-6">
+    <div class="bg-white rounded-3xl card-shadow max-w-2xl w-full p-10 animate-fade-in">
+     <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-sky-100 rounded-full mb-6">
+       <svg class="w-10 h-10 text-sky-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+       </svg>
+      </div>
+      <h1 id="school-title" class="font-display text-4xl font-bold text-slate-800 mb-3">DelMar School of English</h1>
+      <p id="welcome-text" class="text-slate-600 text-lg">Welcome to your English Placement Test</p>
+     </div>
+     <div class="bg-gradient-to-r from-sky-50 to-blue-50 rounded-2xl p-6 mb-8">
+      <h2 id="test-title-display" class="font-display text-xl font-semibold text-slate-700 mb-4">English Level Assessment</h2>
+      <ul class="space-y-3 text-slate-600">
+       <li class="flex items-center gap-3"><span class="w-6 h-6 bg-sky-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</span> <span>20 questions to evaluate your level</span></li>
+       <li class="flex items-center gap-3"><span class="w-6 h-6 bg-sky-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">2</span> <span>Grammar, vocabulary &amp; comprehension</span></li>
+       <li class="flex items-center gap-3"><span class="w-6 h-6 bg-sky-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">3</span> <span>Approximately 10-15 minutes</span></li>
+      </ul>
+     </div>
+     <form id="start-form" class="space-y-4">
+      <div><label for="student-name" class="block text-sm font-semibold text-slate-700 mb-2">Full Name</label> <input type="text" id="student-name" required placeholder="Enter your full name" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-sky-500 focus:outline-none transition-colors">
+      </div>
+      <div><label for="student-email" class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label> <input type="email" id="student-email" required placeholder="Enter your email" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-sky-500 focus:outline-none transition-colors">
+      </div><button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] mt-6"> Start Assessment → </button>
+     </form>
+    </div>
+   </div><!-- Test Screen -->
+   <div id="test-screen" class="min-h-full flex items-center justify-center p-6 hidden">
+    <div class="bg-white rounded-3xl card-shadow max-w-3xl w-full p-8"><!-- Progress -->
+     <div class="mb-8">
+      <div class="flex justify-between items-center mb-3"><span class="text-sm font-semibold text-slate-600">Question <span id="current-q">1</span> of <span id="total-q">20</span></span> <span id="level-indicator" class="text-sm font-semibold text-sky-600 bg-sky-100 px-3 py-1 rounded-full">Beginner</span>
+      </div>
+      <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
+       <div id="progress-bar" class="h-full bg-gradient-to-r from-sky-500 to-blue-600 progress-fill rounded-full" style="width: 5%"></div>
+      </div>
+     </div><!-- Question Container -->
+     <div id="question-container" class="question-card">
+      <div id="question-category" class="inline-block bg-amber-100 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+       Grammar
+      </div>
+      <h2 id="question-text" class="font-display text-2xl font-semibold text-slate-800 mb-6">Loading question...</h2>
+      <div id="options-container" class="space-y-3"><!-- Options will be inserted here -->
+      </div>
+     </div><!-- Navigation -->
+     <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-200"><button id="prev-btn" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+       </svg> Previous </button> <button id="next-btn" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled> Next 
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+       </svg></button>
+     </div>
+    </div>
+   </div><!-- Results Screen -->
+   <div id="results-screen" class="min-h-full flex items-center justify-center p-6 hidden">
+    <div class="bg-white rounded-3xl card-shadow max-w-2xl w-full p-10 animate-fade-in">
+     <div class="text-center">
+      <div id="result-icon" class="inline-flex items-center justify-center w-24 h-24 bg-emerald-100 rounded-full mb-6">
+       <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+       </svg>
+      </div>
+      <h1 class="font-display text-3xl font-bold text-slate-800 mb-2">Assessment Complete!</h1>
+      <p id="result-name" class="text-slate-600 text-lg mb-8">Great job, Student!</p>
+      <div class="bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl p-8 text-white mb-8">
+       <p class="text-sky-100 text-sm uppercase tracking-wide mb-2">Your English Level</p>
+       <h2 id="result-level" class="font-display text-4xl font-bold mb-4">Intermediate</h2>
+       <div class="flex justify-center gap-8">
+        <div>
+         <p class="text-sky-100 text-sm">Score</p>
+         <p id="result-score" class="text-2xl font-bold">75%</p>
+        </div>
+        <div>
+         <p class="text-sky-100 text-sm">Correct</p>
+         <p id="result-correct" class="text-2xl font-bold">15/20</p>
+        </div>
+       </div>
+      </div>
+      <div id="level-description" class="bg-slate-50 rounded-2xl p-6 text-left mb-8">
+       <h3 class="font-semibold text-slate-800 mb-2">What this means:</h3>
+       <p class="text-slate-600">Level description will appear here.</p>
+      </div>
+      <div class="flex gap-4"><button id="retake-btn" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-4 px-6 rounded-xl transition-all"> Retake Test </button> <button id="view-results-btn" class="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-4 px-6 rounded-xl transition-all"> View All Results </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Results History Screen -->
+   <div id="history-screen" class="min-h-full p-6 hidden">
+    <div class="max-w-4xl mx-auto">
+     <div class="bg-white rounded-3xl card-shadow p-8 animate-fade-in">
+      <div class="flex justify-between items-center mb-8">
+       <div>
+        <h1 class="font-display text-3xl font-bold text-slate-800">Student Results</h1>
+        <p class="text-slate-600">Assessment history and scores</p>
+       </div><button id="back-btn" class="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-5 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg> Back </button>
+      </div>
+      <div id="results-list" class="space-y-4">
+       <div class="text-center py-12 text-slate-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <p>No results yet. Complete an assessment to see results here.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Questions database
+    const questions = [
+      // Beginner (A1)
+      { id: 1, category: "Grammar", level: "A1", question: "She ___ a student.", options: ["is", "are", "am", "be"], correct: 0 },
+      { id: 2, category: "Vocabulary", level: "A1", question: "What is the opposite of 'hot'?", options: ["warm", "cold", "cool", "freezing"], correct: 1 },
+      { id: 3, category: "Grammar", level: "A1", question: "I ___ breakfast every morning.", options: ["has", "have", "having", "had"], correct: 1 },
+      { id: 4, category: "Vocabulary", level: "A1", question: "Which word means 'a place to sleep'?", options: ["kitchen", "bathroom", "bedroom", "garden"], correct: 2 },
+      
+      // Elementary (A2)
+      { id: 5, category: "Grammar", level: "A2", question: "They ___ to the cinema last night.", options: ["go", "goes", "went", "going"], correct: 2 },
+      { id: 6, category: "Vocabulary", level: "A2", question: "I'm very ___. I need to eat something.", options: ["thirsty", "tired", "hungry", "angry"], correct: 2 },
+      { id: 7, category: "Grammar", level: "A2", question: "She ___ TV when I called her.", options: ["watches", "watched", "was watching", "is watching"], correct: 2 },
+      { id: 8, category: "Comprehension", level: "A2", question: "'Can you give me a hand?' means:", options: ["Give me your hand", "Help me", "Wave at me", "Touch my hand"], correct: 1 },
+      
+      // Pre-Intermediate (B1)
+      { id: 9, category: "Grammar", level: "B1", question: "If I ___ rich, I would travel the world.", options: ["am", "was", "were", "be"], correct: 2 },
+      { id: 10, category: "Vocabulary", level: "B1", question: "The meeting was ___ until next week.", options: ["put off", "put on", "put up", "put down"], correct: 0 },
+      { id: 11, category: "Grammar", level: "B1", question: "By the time she arrived, the movie ___.", options: ["started", "has started", "had started", "starts"], correct: 2 },
+      { id: 12, category: "Comprehension", level: "B1", question: "'It's raining cats and dogs' means:", options: ["Animals are falling", "It's raining heavily", "Pets are outside", "The weather is nice"], correct: 1 },
+      
+      // Intermediate (B2)
+      { id: 13, category: "Grammar", level: "B2", question: "Not only ___ late, but he also forgot the documents.", options: ["he was", "was he", "he is", "is he"], correct: 1 },
+      { id: 14, category: "Vocabulary", level: "B2", question: "The project was a complete ___. Everyone loved it.", options: ["disaster", "failure", "success", "mistake"], correct: 2 },
+      { id: 15, category: "Grammar", level: "B2", question: "I wish I ___ harder when I was younger.", options: ["study", "studied", "had studied", "have studied"], correct: 2 },
+      { id: 16, category: "Comprehension", level: "B2", question: "'To be on the same page' means:", options: ["Reading together", "Having the same understanding", "Writing similarly", "Being in the same book"], correct: 1 },
+      
+      // Upper-Intermediate (C1)
+      { id: 17, category: "Grammar", level: "C1", question: "Hardly ___ the house when it started raining.", options: ["I had left", "had I left", "I left", "did I leave"], correct: 1 },
+      { id: 18, category: "Vocabulary", level: "C1", question: "His argument was completely ___; it made no sense.", options: ["coherent", "fallacious", "valid", "logical"], correct: 1 },
+      { id: 19, category: "Grammar", level: "C1", question: "The report ___ by tomorrow morning.", options: ["must be finished", "must finished", "must finish", "must be finish"], correct: 0 },
+      { id: 20, category: "Comprehension", level: "C1", question: "'To play devil's advocate' means:", options: ["To support evil", "To argue the opposite view", "To be religious", "To play games"], correct: 1 },
+    ];
+
+    const levelDescriptions = {
+      "A1 - Beginner": "You are at the beginning of your English journey. You can understand and use basic phrases and introduce yourself. We recommend starting with our Foundation course.",
+      "A2 - Elementary": "You can communicate in simple, routine tasks. You can describe your background and immediate environment. Our Elementary course would be perfect for you.",
+      "B1 - Pre-Intermediate": "You can deal with most situations while traveling. You can describe experiences, events, and dreams. Our Pre-Intermediate course will help you progress.",
+      "B2 - Intermediate": "You can interact with fluency and spontaneity. You can produce clear text on various subjects. Our Intermediate course will refine your skills.",
+      "C1 - Upper-Intermediate": "You can express yourself fluently and spontaneously. You can use language flexibly for social, academic, and professional purposes. Our Advanced course awaits you!",
+      "C2 - Advanced": "Congratulations! You have near-native proficiency. You can understand virtually everything and express yourself very fluently. Consider our Mastery or specialized courses."
+    };
+
+    // App State
+    let currentQuestion = 0;
+    let answers = new Array(questions.length).fill(null);
+    let studentData = { name: '', email: '' };
+    let allResults = [];
+
+    // Default config
+    const defaultConfig = {
+      school_name: "DelMar School of English",
+      welcome_message: "Welcome to your English Placement Test",
+      test_title: "English Level Assessment",
+      background_color: "#0369a1",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#0284c7",
+      secondary_action_color: "#94a3b8",
+      font_family: "Playfair Display",
+      font_size: 16
+    };
+
+    let config = { ...defaultConfig };
+
+    // DOM Elements
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const testScreen = document.getElementById('test-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const historyScreen = document.getElementById('history-screen');
+    const startForm = document.getElementById('start-form');
+    const questionContainer = document.getElementById('question-container');
+    const optionsContainer = document.getElementById('options-container');
+    const progressBar = document.getElementById('progress-bar');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const retakeBtn = document.getElementById('retake-btn');
+    const viewResultsBtn = document.getElementById('view-results-btn');
+    const backBtn = document.getElementById('back-btn');
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          applyConfig();
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.background_color || defaultConfig.background_color,
+              set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+            },
+            {
+              get: () => cfg.surface_color || defaultConfig.surface_color,
+              set: (v) => { cfg.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+            },
+            {
+              get: () => cfg.primary_action_color || defaultConfig.primary_action_color,
+              set: (v) => { cfg.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); }
+            },
+            {
+              get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (v) => { cfg.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => cfg.font_family || defaultConfig.font_family,
+            set: (v) => { cfg.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+          },
+          fontSizeable: {
+            get: () => cfg.font_size || defaultConfig.font_size,
+            set: (v) => { cfg.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+          }
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ["school_name", cfg.school_name || defaultConfig.school_name],
+          ["welcome_message", cfg.welcome_message || defaultConfig.welcome_message],
+          ["test_title", cfg.test_title || defaultConfig.test_title]
+        ])
+      });
+    }
+
+    // Initialize Data SDK
+    const dataHandler = {
+      onDataChanged(data) {
+        allResults = data;
+        renderResultsList();
+      }
+    };
+
+    async function initDataSdk() {
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error("Failed to initialize Data SDK");
+        }
+      }
+    }
+
+    initDataSdk();
+
+    // Apply configuration to UI
+    function applyConfig() {
+      const schoolTitle = document.getElementById('school-title');
+      const welcomeText = document.getElementById('welcome-text');
+      const testTitleDisplay = document.getElementById('test-title-display');
+      const app = document.getElementById('app');
+
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+
+      // Apply text content
+      schoolTitle.textContent = config.school_name || defaultConfig.school_name;
+      welcomeText.textContent = config.welcome_message || defaultConfig.welcome_message;
+      testTitleDisplay.textContent = config.test_title || defaultConfig.test_title;
+
+      // Apply fonts
+      document.querySelectorAll('.font-display').forEach(el => {
+        el.style.fontFamily = `${fontFamily}, Georgia, serif`;
+      });
+
+      // Apply font sizes
+      schoolTitle.style.fontSize = `${fontSize * 2.25}px`;
+      welcomeText.style.fontSize = `${fontSize * 1.125}px`;
+
+      // Apply colors
+      app.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${adjustColor(bgColor, 20)} 100%)`;
+      
+      document.querySelectorAll('.bg-white').forEach(el => {
+        el.style.backgroundColor = surfaceColor;
+      });
+
+      document.querySelectorAll('.text-slate-800, .text-slate-700').forEach(el => {
+        el.style.color = textColor;
+      });
+
+      document.querySelectorAll('.bg-sky-600').forEach(el => {
+        el.style.backgroundColor = primaryColor;
+      });
+
+      document.querySelectorAll('.text-slate-600').forEach(el => {
+        el.style.color = adjustColor(textColor, 30);
+      });
+    }
+
+    function adjustColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+      const G = Math.min(255, Math.max(0, (num >> 8 & 0x00FF) + amt));
+      const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    // Show specific screen
+    function showScreen(screen) {
+      welcomeScreen.classList.add('hidden');
+      testScreen.classList.add('hidden');
+      resultsScreen.classList.add('hidden');
+      historyScreen.classList.add('hidden');
+      screen.classList.remove('hidden');
+    }
+
+    // Render current question
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('current-q').textContent = currentQuestion + 1;
+      document.getElementById('total-q').textContent = questions.length;
+      document.getElementById('question-category').textContent = q.category;
+      document.getElementById('question-text').textContent = q.question;
+      document.getElementById('level-indicator').textContent = q.level;
+
+      const progress = ((currentQuestion + 1) / questions.length) * 100;
+      progressBar.style.width = `${progress}%`;
+
+      optionsContainer.innerHTML = '';
+      q.options.forEach((option, index) => {
+        const isSelected = answers[currentQuestion] === index;
+        const btn = document.createElement('button');
+        btn.className = `option-btn w-full text-left p-4 rounded-xl border-2 transition-all ${
+          isSelected 
+            ? 'border-sky-500 bg-sky-50 text-sky-700' 
+            : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50 text-slate-700'
+        }`;
+        btn.innerHTML = `
+          <span class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full border-2 flex items-center justify-center font-semibold ${
+              isSelected ? 'border-sky-500 bg-sky-500 text-white' : 'border-slate-300'
+            }">${String.fromCharCode(65 + index)}</span>
+            <span>${option}</span>
+          </span>
+        `;
+        btn.addEventListener('click', () => selectAnswer(index));
+        optionsContainer.appendChild(btn);
+      });
+
+      prevBtn.disabled = currentQuestion === 0;
+      nextBtn.disabled = answers[currentQuestion] === null;
+      nextBtn.textContent = currentQuestion === questions.length - 1 ? 'Finish' : 'Next';
+    }
+
+    // Select answer
+    function selectAnswer(index) {
+      answers[currentQuestion] = index;
+      renderQuestion();
+    }
+
+    // Calculate results
+    function calculateResults() {
+      let correct = 0;
+      const levelScores = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0 };
+      const levelTotals = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0 };
+
+      questions.forEach((q, index) => {
+        levelTotals[q.level]++;
+        if (answers[index] === q.correct) {
+          correct++;
+          levelScores[q.level]++;
+        }
+      });
+
+      const percentage = Math.round((correct / questions.length) * 100);
+      let level = "A1 - Beginner";
+
+      if (percentage >= 90) level = "C2 - Advanced";
+      else if (percentage >= 75) level = "C1 - Upper-Intermediate";
+      else if (percentage >= 60) level = "B2 - Intermediate";
+      else if (percentage >= 45) level = "B1 - Pre-Intermediate";
+      else if (percentage >= 30) level = "A2 - Elementary";
+
+      return { correct, total: questions.length, percentage, level };
+    }
+
+    // Show results
+    async function showResults() {
+      const results = calculateResults();
+      
+      document.getElementById('result-name').textContent = `Great job, ${studentData.name}!`;
+      document.getElementById('result-level').textContent = results.level;
+      document.getElementById('result-score').textContent = `${results.percentage}%`;
+      document.getElementById('result-correct').textContent = `${results.correct}/${results.total}`;
+      document.getElementById('level-description').innerHTML = `
+        <h3 class="font-semibold text-slate-800 mb-2">What this means:</h3>
+        <p class="text-slate-600">${levelDescriptions[results.level]}</p>
+      `;
+
+      // Save to Data SDK
+      if (window.dataSdk) {
+        if (allResults.length >= 999) {
+          showToast("Maximum storage limit reached. Cannot save new results.");
+        } else {
+          const saveResult = await window.dataSdk.create({
+            student_name: studentData.name,
+            student_email: studentData.email,
+            score: results.percentage,
+            level: results.level,
+            completed_at: new Date().toISOString(),
+            total_questions: results.total,
+            correct_answers: results.correct
+          });
+
+          if (!saveResult.isOk) {
+            showToast("Failed to save results. Please try again.");
+          }
+        }
+      }
+
+      showScreen(resultsScreen);
+    }
+
+    // Render results list
+    function renderResultsList() {
+      const container = document.getElementById('results-list');
+      
+      if (allResults.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-slate-500">
+            <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <p>No results yet. Complete an assessment to see results here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const sortedResults = [...allResults].sort((a, b) => 
+        new Date(b.completed_at) - new Date(a.completed_at)
+      );
+
+      container.innerHTML = sortedResults.map((result, index) => {
+        const date = new Date(result.completed_at);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+        });
+        
+        const levelColor = getLevelColor(result.level);
+        
+        return `
+          <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl animate-slide-in" style="animation-delay: ${index * 0.05}s">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 ${levelColor.bg} rounded-full flex items-center justify-center">
+                <span class="${levelColor.text} font-bold text-lg">${result.score}%</span>
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-800">${result.student_name}</h3>
+                <p class="text-sm text-slate-500">${result.student_email}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="inline-block ${levelColor.bg} ${levelColor.text} text-sm font-semibold px-3 py-1 rounded-full mb-1">${result.level}</span>
+              <p class="text-xs text-slate-500">${formattedDate}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getLevelColor(level) {
+      if (level.includes('C2') || level.includes('C1')) return { bg: 'bg-emerald-100', text: 'text-emerald-700' };
+      if (level.includes('B2')) return { bg: 'bg-blue-100', text: 'text-blue-700' };
+      if (level.includes('B1')) return { bg: 'bg-sky-100', text: 'text-sky-700' };
+      if (level.includes('A2')) return { bg: 'bg-amber-100', text: 'text-amber-700' };
+      return { bg: 'bg-orange-100', text: 'text-orange-700' };
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-fade-in';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Reset test
+    function resetTest() {
+      currentQuestion = 0;
+      answers = new Array(questions.length).fill(null);
+      studentData = { name: '', email: '' };
+      document.getElementById('student-name').value = '';
+      document.getElementById('student-email').value = '';
+      showScreen(welcomeScreen);
+    }
+
+    // Event Listeners
+    startForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      studentData.name = document.getElementById('student-name').value;
+      studentData.email = document.getElementById('student-email').value;
+      showScreen(testScreen);
+      renderQuestion();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    retakeBtn.addEventListener('click', resetTest);
+
+    viewResultsBtn.addEventListener('click', () => {
+      showScreen(historyScreen);
+    });
+
+    backBtn.addEventListener('click', () => {
+      showScreen(resultsScreen);
+    });
+
+    // Initial config apply
+    applyConfig();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c9376ece1dd8a88',t:'MTc3MDMwNTU4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
